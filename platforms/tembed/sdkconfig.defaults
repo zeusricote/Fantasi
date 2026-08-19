@@ -1,0 +1,20 @@
+# Fantasi / LilyGO T-Embed (ESP32-S3) SDK configuration.
+# These defaults are merged with the user's sdkconfig when ESP-IDF builds.
+
+# ---- Target ----
+CONFIG_IDF_TARGET="esp32s3"
+
+# ---- Flash ----
+# T-Embed has 8 MB flash. Reserve 256 KB at a fixed partition for LittleFS.
+CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="8MB"
+
+# ---- FreeRTOS ----
+# Fantasi's core is FreeRTOS-based; ESP-IDF provides the SMP port.
+# Single-core PN is not needed - enable dual-core (default).
+CONFIG_FREERTOS_HZ=1000
+
+# ---- TinyUSB ----
+# USB peripheral is the ESP32-S3 built-in USB-OTG (external PHY not needed).
+CONFIG_TINYUSB_CDC_ENABLED=y
+CONFIG_TINYUSB_RHPORT0_MODE=1

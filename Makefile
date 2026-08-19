@@ -7,6 +7,7 @@
 #   make PLATFORM=chameleon     # nRF52840  (Cortex-M4)
 #   make PLATFORM=proxmark3     # AT91SAM7S (ARM7TDMI)
 #   make PLATFORM=proxmark5     # AT32F435  (Cortex-M4)
+#   make PLATFORM=tembed        # LilyGO T-Embed (ESP32-S3, Xtensa LX7)
 #   make cli                    # host-side CLI (build/cli/fantasi)
 #   make clean                  # remove all build artifacts (or PLATFORM=<x> for one)
 #   make flash                  # auto-detect connected device + flash (PLATFORM=<x> to force)
@@ -19,7 +20,7 @@ PLATFORM ?= help
 
 # Every buildable firmware target - used when no PLATFORM is given so a bare
 # `make` builds them all and `make clean` removes everything.
-ALL_PLATFORMS := flipper kiisu chameleon proxmark3 proxmark5
+ALL_PLATFORMS := flipper kiisu chameleon proxmark3 proxmark5 tembed
 
 # All three platforms build against TinyUSB under third_party/tinyusb/. The
 # `check-tinyusb` target auto-clones it if missing, pinned to a known-
@@ -102,6 +103,7 @@ help:
 	@echo "  make PLATFORM=chameleon   build Chameleon Ultra firmware (nRF52840)"
 	@echo "  make PLATFORM=proxmark3   build Proxmark3 firmware (AT91SAM7S)"
 	@echo "  make PLATFORM=proxmark5   build Proxmark5 firmware (AT32F435)"
+	@echo "  make PLATFORM=tembed      build LilyGO T-Embed firmware (ESP32-S3)"
 	@echo "  make cli                  build the host CLI (build/cli/fantasi)"
 	@echo "  make app APP=<name>       build a loadable app (apps/<name>/<name>.c)"
 	@echo "  make launch APP=<name>    build + upload + run an app on the device"
@@ -183,6 +185,11 @@ proxmark3: check-toolchain check-tinyusb check-littlefs
 	$(MAKE) -C platforms/$@
 
 proxmark5: check-toolchain check-tinyusb check-littlefs
+	$(MAKE) -C platforms/$@
+
+# LilyGO T-Embed (ESP32-S3). Built through ESP-IDF (Xtensa LX7 toolchain,
+# FreeRTOS SMP port, TinyUSB, esptool) - see platforms/tembed/Makefile.
+tembed:
 	$(MAKE) -C platforms/$@
 
 flash:

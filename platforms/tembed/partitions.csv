@@ -1,0 +1,17 @@
+# Fantasi / LilyGO T-Embed (ESP32-S3) flash partition table.
+#
+# The T-Embed ships with a ~8 MB SPI flash (quad-SPI). Layout:
+#   - nvs:     ESP-IDF NVS (wifi/BLE provisioning, factory data)
+#   - phy_init: radio calibration
+#   - factory: firmware app (configurable via sdkconfig, default 4 MB)
+#   - littlefs: Fantasi storage region (256 KB) - LittleFS filesystem
+#
+# The 256 KB littlefs partition is the / (root) volume, mirroring
+# Fantasi's storage model on the other targets. `storage_flash_*` in
+# the platform HAL reads/writes this region.
+
+# Name,   Type, SubType, Offset,  Size,    Flags
+nvs,      data, nvs,     0x9000,  0x6000,
+phy_init, data, phy,     0xf000,  0x1000,
+factory,  app,  factory, 0x10000, 0x400000,
+littlefs, data, spiffs,  0x410000, 0x40000,
