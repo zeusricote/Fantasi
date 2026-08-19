@@ -55,6 +55,14 @@ LFS_TAG     := v2.11.3
 LFS_DIR     := third_party/littlefs
 LFS_MARKER  := $(LFS_DIR)/lfs.c
 
+# ESP-IDF (LilyGO T-Embed / ESP32-S3). Cloned on demand into third_party/esp-idf,
+# pinned to a known-good release tag. The Xtensa toolchain is installed separately
+# by ESP-IDF's install.sh (see check-esp-idf).
+IDF_URL     := https://github.com/espressif/esp-idf.git
+IDF_TAG     := v5.3.2
+IDF_DIR     := third_party/esp-idf
+IDF_MARKER  := $(IDF_DIR)/tools/idf.py
+
 # nanopb code generator (host pip install, e.g. ~/.local/bin). Override if it
 # lives elsewhere: `make proto NANOPB=/path/to/nanopb_generator`.
 NANOPB ?= nanopb_generator
@@ -65,7 +73,7 @@ NANOPB ?= nanopb_generator
 # builds/flashes.
 CROSS ?= arm-none-eabi-
 
-.PHONY: all cli app launch flash storage test test-unit proto berry clean help $(PLATFORM) check-tinyusb check-littlefs check-toolchain
+.PHONY: all cli app launch flash storage test test-unit proto berry clean help $(PLATFORM) check-tinyusb check-littlefs check-toolchain check-esp-idf
 
 all:
 	@if [ "$(PLATFORM)" = "help" ]; then \
@@ -171,6 +179,30 @@ check-littlefs:
 	  }; \
 	fi
 
+# ESP-IDF for the LilyGO T-Embed (ESP32-S3). Cloned on demand into
+# third_party/esp-idf (gitignored). The Xtensa toolchain is installed by
+# ESP-IDF's own install.sh - this target runs it if the toolchain is missing.
+check-esp-idf:
+	@if [ ! -f $(IDF_MARKER) ]; then \
+	  if ! command -v git >/dev/null 2>&1; then \
+	    echo "error: git is required to fetch ESP-IDF. Install git and retry." >&2; \
+	    exit 1; \
+	  fi; \
+	  echo "Fetching ESP-IDF $(IDF_TAG) into $(IDF_DIR)..."; \
+	  rm -rf $(IDF_DIR); \
+	  git clone --depth 1 --branch $(IDF_TAG) --recursive $(IDF_URL) $(IDF_DIR) || { \
+	    echo "error: ESP-IDF clone failed. Check network and try again." >&2; \
+	    rm -rf $(IDF_DIR); exit 1; \
+	  }; \
+	fi
+	@if [ ! -d $(IDF_DIR)/tools/xtensa-esp-elf ]; then \
+	  echo "Installing ESP-IDF toolchain (this downloads the Xtensa toolchain)..."; \
+	  cd $(IDF_DIR) && ./install.sh esp32s3 || { \
+	    echo "error: ESP-IDF toolchain install failed." >&2; \
+	    exit 1; \
+	  }; \
+	fi
+
 flipper: check-toolchain check-tinyusb check-littlefs
 	$(MAKE) -C platforms/$@
 
@@ -189,7 +221,7 @@ proxmark5: check-toolchain check-tinyusb check-littlefs
 
 # LilyGO T-Embed (ESP32-S3). Built through ESP-IDF (Xtensa LX7 toolchain,
 # FreeRTOS SMP port, TinyUSB, esptool) - see platforms/tembed/Makefile.
-tembed:
+tembed: check-esp-idf
 	$(MAKE) -C platforms/$@
 
 flash:

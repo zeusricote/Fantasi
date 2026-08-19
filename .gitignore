@@ -4,6 +4,8 @@ build/
 # Auto-fetched by `make` - pinned versions live in top-level Makefile
 third_party/tinyusb/
 third_party/littlefs/
+third_party/esp-idf/
+third_party/esp-idf-xtensa/
 
 # Vendor reference firmwares - each under its own license and too
 # large to redistribute. Keep locally for research only.
