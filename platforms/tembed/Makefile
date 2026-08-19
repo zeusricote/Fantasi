@@ -19,7 +19,7 @@ PLATFORM_DIR := $(ROOT)/platforms/tembed
 # Resolve the ESP-IDF root: local install first, third_party clone as fallback.
 IDF_DIR  := $(or $(IDF_PATH), \
                 $(shell command -v idf.py >/dev/null 2>&1 && dirname $$(dirname $$(command -v idf.py))), \
-                $(ROOT)/third_party/esp-idf)
+                $(ROOT)/third_party/esp-idf/v6.0.2/esp-idf)
 IDF_PY   := $(IDF_DIR)/tools/idf.py
 
 # Xtensa toolchain bin dir (created by ESP-IDF's install.sh).

@@ -1,5 +1,5 @@
-path = "/home/codespace/.espressif"
-idf_path = "/home/codespace/.espressif/v6.0.2/esp-idf"
+path = "/workspaces/Fantasi/third_party/esp-idf"
+idf_path = "/workspaces/Fantasi/third_party/esp-idf/v6.0.2/esp-idf"
 esp_idf_json_path = "/home/codespace/.espressif/tools"
 tool_download_folder_name = "/home/codespace/.espressif/dist"
 tool_install_folder_name = "/home/codespace/.espressif/tools"

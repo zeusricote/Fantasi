@@ -60,7 +60,7 @@ LFS_MARKER  := $(LFS_DIR)/lfs.c
 # by ESP-IDF's install.sh (see check-esp-idf).
 IDF_URL     := https://github.com/espressif/esp-idf.git
 IDF_TAG     := v5.3.2
-IDF_DIR     := third_party/esp-idf
+IDF_DIR     := third_party/esp-idf/v6.0.2/esp-idf
 IDF_MARKER  := $(IDF_DIR)/tools/idf.py
 
 # nanopb code generator (host pip install, e.g. ~/.local/bin). Override if it
@@ -183,6 +183,7 @@ check-littlefs:
 # third_party/esp-idf (gitignored). The Xtensa toolchain is installed by
 # ESP-IDF's own install.sh - this target runs it if the toolchain is missing.
 check-esp-idf:
+	@export IDF_TOOLS_PATH="third_party/esp-idf/v6.0.2/esp-idf/"
 	@if [ ! -f $(IDF_MARKER) ]; then \
 	  if ! command -v git >/dev/null 2>&1; then \
 	    echo "error: git is required to fetch ESP-IDF. Install git and retry." >&2; \
